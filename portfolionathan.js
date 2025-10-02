@@ -136,37 +136,51 @@ document.querySelectorAll(".skill-item, .timeline-item, .project-card").forEach(
 })
 
 // ====== CONTACT FORM ======
-const contactForm = document.querySelector(".contact-form")
+const contactForm = document.querySelector(".contact-form");
 
 contactForm.addEventListener("submit", (e) => {
-  e.preventDefault()
 
   // Get form data
-  const formData = new FormData(contactForm)
-  const name = contactForm.querySelector('input[type="text"]').value
-  const email = contactForm.querySelector('input[type="email"]').value
-  const message = contactForm.querySelector("textarea").value
+  const formData = new FormData(contactForm);
+  const name = contactForm.querySelector('input[type="text"]').value;
+  const email = contactForm.querySelector('input[type="email"]').value;
+  const message = contactForm.querySelector("textarea").value;
 
   // Simple validation
   if (!name || !email || !message) {
-    alert("Please fill in all fields")
-    return
+    alert("Please fill in all fields");
+    return;
   }
 
-  // Simulate form submission
-  const submitBtn = contactForm.querySelector("button")
-  const originalText = submitBtn.innerHTML
+  // Submit button
+  const submitBtn = contactForm.querySelector("button");
+  const originalText = submitBtn.innerHTML;
 
-  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...'
-  submitBtn.disabled = true
+  // Show sending state
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+  submitBtn.disabled = true;
 
-  setTimeout(() => {
-    alert("Thank you for your message! I'll get back to you soon.")
-    contactForm.reset()
-    submitBtn.innerHTML = originalText
-    submitBtn.disabled = false
-  }, 2000)
-})
+  // Send form data to Formsubmit
+  fetch(contactForm.action, {
+    method: "POST",
+    body: formData
+  })
+    .then(response => {
+      if (response.ok) {
+        alert("Thank you for your message! I'll get back to you soon.");
+        contactForm.reset();
+      } else {
+        alert("Oops! Something went wrong. Please try again.");
+      }
+      submitBtn.innerHTML = originalText;
+      submitBtn.disabled = false;
+    })
+    .catch(error => {
+      alert("Oops! Something went wrong. Please try again.");
+      submitBtn.innerHTML = originalText;
+      submitBtn.disabled = false;
+    });
+});
 
 // ====== PARALLAX EFFECT ======
 window.addEventListener("scroll", () => {
